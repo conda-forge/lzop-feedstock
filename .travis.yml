@@ -1,65 +1,22 @@
 # This file was generated automatically from conda-smithy. To update this configuration,
 # update the conda-forge.yml and/or the recipe/meta.yaml.
-# -*- mode: yaml -*-
 
 language: generic
 
-os: osx
-osx_image: xcode9.4
-
-
 env:
-  matrix:
-    - CONFIG=osx_
-
   global:
     # The BINSTAR_TOKEN secure variable. This is defined canonically in conda-forge.yml.
     - secure: "GOvuVEBzDxiEZ6gdjnwUr/TfVOB2HAtS+abVrulKmhx8Jpniizb0S1Jq/K2BIPbgRvjv3ZLaJOtCH4EQ3FuP/RAF+6qpSrmOej0D7ziNQEtZlW71tBta5IdpFM5rtf4XFt/ceTMlCegHkdx3gdQvLqb8Zvm6JzcXR6KQ0meYY3n82zGkjWQyesh59Ul70mZMJyl0WvdPN5bqGSS1qi5rhL3QsKMSczEj0Qq2LvoXyvySqJ57mOGC2iq+kHvQso4bXk9dF7CD+MnZWSXLUSj+WOnJNoEGTRBYHcq4PhbdRQF3Tdj36APf7IzkVQbyg0M1QSypKKIyPzxf30kTV+Jsw4c9zH+Kg2/YKH+BFLkhu2AZXMk0arSAOOtI8OQdAMq2si53nBjjhdwwtEPopqzZ/oMHOOelJvwo/45fFMMZFNzdUyUMvwPqZHMnDZoEow+JOeWZvGYY3NOFXsW33cRGAL6tKONmlnKyjeREipq7Op+vK2XDg13/Tvh9pg/kVdE7aQKJYO6DCoulZwt8g6Sb9O9yG6bjKLH4VrhTSHFsgdlU8U1CKvXh1kxIo6OeGmttZ/DuBCeyAnh/uIuXZzckPt9XBHJLizmYyh495zRkVoRspHw671SZYbUQkFtZoewMJzddec7/tnp3GOco/s1EN+NnsARyB7RTKzcTM6Yooho="
 
-
-before_install:
-    # Fast finish the PR.
-    - |
-      (curl https://raw.githubusercontent.com/conda-forge/conda-forge-ci-setup-feedstock/master/recipe/conda_forge_ci_setup/ff_ci_pr_build.py | \
-          python - -v --ci "travis" "${TRAVIS_REPO_SLUG}" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_PULL_REQUEST}") || exit 1
-
-    # Remove homebrew.
-    - |
-      echo ""
-      echo "Removing homebrew from Travis CI to avoid conflicts."
-      curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall > ~/uninstall_homebrew
-      chmod +x ~/uninstall_homebrew
-      ~/uninstall_homebrew -fq
-      rm ~/uninstall_homebrew
-
-
-install:
-    # Install Miniconda.
-    - |
-      echo ""
-      echo "Installing a fresh version of Miniconda."
-      MINICONDA_URL="https://repo.continuum.io/miniconda"
-      MINICONDA_FILE="Miniconda3-latest-MacOSX-x86_64.sh"
-      curl -L -O "${MINICONDA_URL}/${MINICONDA_FILE}"
-      bash $MINICONDA_FILE -b
-
-    # Configure conda.
-    - |
-      echo ""
-      echo "Configuring conda."
-      source /Users/travis/miniconda3/bin/activate root
-
-      conda install -n root -c conda-forge --quiet --yes conda-forge-ci-setup=2 conda-build
-      setup_conda_rc ./ ./recipe ./.ci_support/${CONFIG}.yaml
-
-      source run_conda_forge_build_setup
-
-    # compiler cleanup
-    - |
-      mangle_compiler ./ ./recipe ./.ci_support/${CONFIG}.yaml
+matrix:
+  include:
+    - env: CONFIG=linux_ppc64le_ UPLOAD_PACKAGES=True PLATFORM=linux-ppc64le DOCKER_IMAGE=condaforge/linux-anvil-ppc64le
+      os: linux
+      arch: ppc64le
 
 script:
-  # generate the build number clobber
-  - make_build_number ./ ./recipe ./.ci_support/${CONFIG}.yaml
-  -  conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
-  - upload_package ./ ./recipe ./.ci_support/${CONFIG}.yaml
+  - export CI=travis
+  - export GIT_BRANCH="$TRAVIS_BRANCH"
+
+
+  - if [[ ${PLATFORM} =~ .*linux.* ]]; then ./.scripts/run_docker_build.sh; fi
