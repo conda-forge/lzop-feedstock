@@ -30,11 +30,12 @@ test:
 
 about:
   home: http://www.lzop.org/
-  license: GNU GPL
+  license: GPL-2.0-or-later
   license_file: COPYING
   summary: 'lzop is a file compressor which is very similar to gzip.'
   doc_url: http://www.lzop.org/lzop_man.php
 
 extra:
   recipe-maintainers:
+    - danielnachun
     - npavlovikj
