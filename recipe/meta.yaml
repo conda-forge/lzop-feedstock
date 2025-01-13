@@ -10,12 +10,14 @@ source:
   sha256: 7e72b62a8a60aff5200a047eea0773a8fb205caf7acbe1774d95147f305a2f41
 
 build:
-  number: 2
+  number: 3
   skip: True  # [win]
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib('c') }}
+    - gnuconfig  # [unix]
     - make
   host:
     - lzo
@@ -29,7 +31,6 @@ test:
 about:
   home: http://www.lzop.org/
   license: GNU GPL
-  license_family: GPL
   license_file: COPYING
   summary: 'lzop is a file compressor which is very similar to gzip.'
   doc_url: http://www.lzop.org/lzop_man.php
