@@ -5,7 +5,7 @@ Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/lzop-feedstock/
 
 Home: http://www.lzop.org/
 
-Package license: GNU GPL
+Package license: GPL-2.0-or-later
 
 Summary: lzop is a file compressor which is very similar to gzip.
 
@@ -192,5 +192,6 @@ In order to produce a uniquely identifiable distribution:
 Feedstock Maintainers
 =====================
 
+* [@danielnachun](https://github.com/danielnachun/)
 * [@npavlovikj](https://github.com/npavlovikj/)
 
